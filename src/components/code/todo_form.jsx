@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./TodoForm.css";
 
 function TodoForm() {
@@ -7,24 +7,37 @@ function TodoForm() {
  const [editIndex, setEditIndex] = useState(null);
  const [editedValue, setEditedValue] = useState("");
 
+ useEffect(() => {
+  const savedTodos = localStorage.getItem("todos");
+  if (savedTodos) {
+   setTodos(JSON.parse(savedTodos));
+  }
+ }, []);
+
  function handleChange(e) {
   setInputValue(e.target.value);
  }
 
  function handleSubmit(e) {
   e.preventDefault();
-  setTodos([{ text: inputValue, priorityLevel: "low" }, ...todos]);
+  if (!inputValue) return;
+  const newTodos = [{ text: inputValue, priorityLevel: "low" }, ...todos];
+  setTodos(newTodos);
+  localStorage.setItem("todos", JSON.stringify(newTodos));
   setInputValue("");
+  console.log(todos);
  }
 
  const handleDelete = (id) => {
   const newTodos = todos.filter((_, index) => index !== id);
   setTodos(newTodos);
+  localStorage.setItem("todos", JSON.stringify(newTodos));
  };
 
  const handleUpdate = (id) => {
   const newTodos = [...todos];
   newTodos[id].text = editedValue;
+  localStorage.setItem("todos", JSON.stringify(newTodos));
   setTodos(newTodos);
   setEditIndex(null);
   setEditedValue("");
@@ -33,9 +46,8 @@ function TodoForm() {
   const newTodos = [...todos];
   newTodos[id].priorityLevel = priorityLevel;
   setTodos(newTodos);
+  localStorage.setItem("todos", JSON.stringify(todos));
  };
-
- //  const priorityClasses = ["low", "medium", "high", "urgent"];
 
  return (
   <div className="todo-form-container">
