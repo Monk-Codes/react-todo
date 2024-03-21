@@ -99,7 +99,7 @@
 }
 .bg {
  background-size: "cover";
- height: 100vh;
+ height: 100dvh;
  background-repeat: no-repeat;
 }
 header {
